@@ -6,17 +6,36 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 10:13:50 by bajeanno          #+#    #+#             */
-/*   Updated: 2022/12/21 17:04:46 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2022/12/21 17:56:06 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
+static int	send_byte(char byte, int pid)
+{
+	size_t	j;
+
+	j = 0;
+	while (j < 8)
+	{
+		if (((byte << j) & 0b10000000) == 0)
+		{
+			if (kill(pid, SIGUSR1) != 0)
+				return (write(STDERR_FILENO,"PID is incorrect\n",17), 1);
+		}
+		else if (kill(pid, SIGUSR2) != 0)
+			return (write(STDERR_FILENO,"PID is incorrect\n", 17), 1);
+		j++;
+		usleep(20);
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
-	int	i;
-	int	j;
-	int	pid;
+	size_t	i;
+	int		pid;
 
 	if (argc != 3)
 		return (write(1, "Error\n", 6), 1);
@@ -24,29 +43,11 @@ int	main(int argc, char **argv)
 	i = 0;
 	while (argv[2][i])
 	{
-		j = 0;
-		while (j < 8)
-		{
-			if (((argv[2][i] << j) & 0b10000000) == 0)
-			{
-				if (kill(pid, SIGUSR1) != 0)
-					return (write(STDERR_FILENO, "the specified process is not running anymore or the PID is incorrect\n", 69), 1);
-				ft_printf("sent 0\n");
-			}
-			else
-			{
-				if (kill(pid, SIGUSR2) != 0)
-					return (write(STDERR_FILENO, "the specified process is not running anymore or the PID is incorrect\n", 69), 1);
-				ft_printf("sent 1\n");
-			}
-			j++;
-			sleep(1);
-		}
+		if (send_byte(argv[2][i], pid))
+			return (1);
 		i++;
-		// ft_printf("\n");
 	}
-	while (1)
-		if (kill(pid, SIGUSR1) != 0)
-			return (0);
+	if (send_byte(0, pid))
+		return (1);
 	return (0);
 }

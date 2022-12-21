@@ -6,7 +6,7 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 09:58:37 by bajeanno          #+#    #+#             */
-/*   Updated: 2022/12/21 16:24:14 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2022/12/21 19:29:51 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@ void	update_string(int sig)
 {
 	char	*newstr;
 
+	g_string.str[g_string.size - 1] |= (sig == SIGUSR2) << (7 - g_string.count);
+	g_string.count++;
+	if (g_string.count == 8 && g_string.str[g_string.size - 1] == 0)
+		return (g_string.finished = 1, (void)0);
 	if (g_string.count == 8)
 	{
 		g_string.size++;
@@ -34,26 +38,19 @@ void	update_string(int sig)
 		if (!newstr)
 			return ;
 		ft_memmove(newstr, g_string.str, g_string.size - 1);
-		free(g_string.str);
+		if (g_string.str)
+			free(g_string.str);
 		g_string.str = newstr;
 		g_string.count = 0;
 	}
-	g_string.str[g_string.size - 1] |= (sig == SIGUSR2) << (7 - g_string.count);
-	g_string.count++;
-	if (g_string.count == 8 && g_string.str[g_string.size - 1] == 0)
-	{
-		g_string.finished = 1;
-	}
-	ft_printf("received %d\n", (sig == SIGUSR2));
 }
 
-#include <stdio.h>
 int	main(void)
 {
 	ft_init_string();
 	signal(SIGUSR1, update_string);
 	signal(SIGUSR2, update_string);
-	fprintf(stderr, "%d\n", getpid());
+	ft_printf("%d\n", getpid());
 	while (1)
 	{
 		if (g_string.finished)

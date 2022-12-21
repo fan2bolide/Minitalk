@@ -6,13 +6,13 @@
 #    By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/17 16:28:53 by bajeanno          #+#    #+#              #
-#    Updated: 2022/12/20 12:12:10 by bajeanno         ###   ########lyon.fr    #
+#    Updated: 2022/12/21 19:00:49 by bajeanno         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
-CLIENT = minitalk_c
+CLIENT = client
 
-SERVER = minitalk_s
+SERVER = server
 
 FLAGS = -Werror -Wall -Wextra -I libft/head -I ./head
 
