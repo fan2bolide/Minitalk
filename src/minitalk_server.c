@@ -6,7 +6,7 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 09:58:37 by bajeanno          #+#    #+#             */
-/*   Updated: 2022/12/21 19:29:51 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2022/12/21 21:42:57 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ void	update_string(int sig)
 {
 	char	*newstr;
 
-	g_string.str[g_string.size - 1] |= (sig == SIGUSR2) << (7 - g_string.count);
+	g_string.str[g_string.size - 1] |= (sig == SIGUSR2);
+	g_string.str[g_string.size - 1] <<= 1;
 	g_string.count++;
 	if (g_string.count == 8 && g_string.str[g_string.size - 1] == 0)
 		return (g_string.finished = 1, (void)0);
@@ -54,7 +55,12 @@ int	main(void)
 	while (1)
 	{
 		if (g_string.finished)
-			return (ft_printf("%s\n", g_string.str), 0);
+		{
+			ft_printf("%s\n", g_string.str);
+			g_string.finished = 0;
+			free(g_string.str);
+			ft_init_string();
+		}
 	}
 	return (0);
 }
