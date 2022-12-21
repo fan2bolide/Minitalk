@@ -6,7 +6,7 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 10:13:50 by bajeanno          #+#    #+#             */
-/*   Updated: 2022/12/20 12:28:06 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2022/12/21 16:15:10 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,31 @@ int	main(int argc, char **argv)
 	i = 0;
 	while (argv[2][i])
 	{
-		j = 2;
+		j = 1;
 		while (j < 8)
 		{
-			if ((argv[1][i] << j) >> j == j)
+			if ((argv[1][i] & (1 << (7 - j))) == 0)
 			{
 				if (kill(pid, SIGUSR1) != 0)
 					return (write(STDERR_FILENO, "the specified process is not running anymore or the PID is incorrect\n", 69), 1);
+				ft_printf("sent 0\n");
 			}
 			else
+			{
 				if (kill(pid, SIGUSR2) != 0)
 					return (write(STDERR_FILENO, "the specified process is not running anymore or the PID is incorrect\n", 69), 1);
+				ft_printf("sent 1\n");
+			}
 			j++;
+			sleep(1);
 		}
 		i++;
+		// ft_printf("\n");
+	}
+	while (1)
+	{
+		if (kill(pid, SIGUSR1) != 0)
+			return (0);
 	}
 	return (0);
 }
