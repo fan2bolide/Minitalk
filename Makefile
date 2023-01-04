@@ -6,7 +6,7 @@
 #    By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/17 16:28:53 by bajeanno          #+#    #+#              #
-#    Updated: 2022/12/21 19:00:49 by bajeanno         ###   ########lyon.fr    #
+#    Updated: 2023/01/04 21:45:05 by bajeanno         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,9 @@ LIBFT = libft/libft.a
 
 SERVER_SRC = minitalk_server.c
 CLIENT_SRC = minitalk_client.c
+
+BONUS_SERVER_SRC = minitalk_server_bonus.c
+BONUS_CLIENT_SRC = minitalk_client_bonus.c
 
 SERVER_OBJ = $(addprefix obj/,$(SERVER_SRC:.c=.o))
 CLIENT_OBJ = $(addprefix obj/,$(CLIENT_SRC:.c=.o))

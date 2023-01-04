@@ -6,7 +6,7 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 09:58:37 by bajeanno          #+#    #+#             */
-/*   Updated: 2023/01/04 04:17:27 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2023/01/04 21:49:27 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	ft_init_string()
 	g_string.count = 0;
 	g_string.finished = 0;
 }
-#include <stdio.h>
+
 void	update_string(int sig, siginfo_t *info, void *context)
 {
 	char	*newstr;
