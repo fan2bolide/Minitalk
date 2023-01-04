@@ -6,7 +6,7 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 10:13:50 by bajeanno          #+#    #+#             */
-/*   Updated: 2022/12/22 14:39:35 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2023/01/04 04:17:08 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ int	main(int argc, char **argv)
 		if (send_byte(argv[2][i], pid))
 			return (1);
 		i++;
-		pause();
 	}
 	if (send_byte(0, pid))
 		return (1);

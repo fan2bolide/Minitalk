@@ -6,7 +6,7 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 09:58:37 by bajeanno          #+#    #+#             */
-/*   Updated: 2022/12/22 14:36:04 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2023/01/04 04:17:27 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,18 @@ static void	ft_init_string()
 	g_string.count = 0;
 	g_string.finished = 0;
 }
-
+#include <stdio.h>
 void	update_string(int sig, siginfo_t *info, void *context)
 {
 	char	*newstr;
 
 	(void)context;
-	g_string.str[g_string.size - 1] |= (sig == SIGUSR2);
+	usleep(5);
 	g_string.str[g_string.size - 1] <<= 1;
+	g_string.str[g_string.size - 1] |= (sig == SIGUSR2);
 	g_string.count++;
 	if (g_string.count == 8 && g_string.str[g_string.size - 1] == 0)
-		return (g_string.finished = 1, (void)0);
+		return (kill(info->si_pid, SIGUSR1), g_string.finished = 1, (void)0);
 	if (g_string.count == 8)
 	{
 		g_string.size++;
@@ -42,7 +43,10 @@ void	update_string(int sig, siginfo_t *info, void *context)
 			return ;
 		ft_memmove(newstr, g_string.str, g_string.size - 1);
 		if (g_string.str)
+		{
 			free(g_string.str);
+			g_string.str = NULL;
+		}
 		g_string.str = newstr;
 		g_string.count = 0;
 	}
@@ -53,15 +57,10 @@ int	main(void)
 {
 	struct sigaction	action1;
 	struct sigaction	action2;
-	sigset_t			mask;
 
 	ft_init_string();
-	sigemptyset(&mask);
-    sigaddset(&mask, SIGINT);
     action1.sa_sigaction = update_string;
-    action1.sa_mask = mask;
 	action2.sa_sigaction = update_string;
-	action2.sa_mask = mask;
 	ft_printf("%d\n", getpid());
 	while (1)
 	{
