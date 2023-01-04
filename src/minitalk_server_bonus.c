@@ -6,13 +6,11 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 09:58:37 by bajeanno          #+#    #+#             */
-/*   Updated: 2023/01/04 21:46:53 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2023/01/04 22:15:03 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
-#include <unistd.h>
-#include <signal.h>
 
 t_string	g_string;
 
@@ -23,7 +21,7 @@ static void	ft_init_string()
 	g_string.count = 0;
 	g_string.finished = 0;
 }
-#include <stdio.h>
+
 void	update_string(int sig, siginfo_t *info, void *context)
 {
 	char	*newstr;
@@ -40,7 +38,8 @@ void	update_string(int sig, siginfo_t *info, void *context)
 		g_string.size++;
 		newstr = ft_calloc(g_string.size, sizeof (char));
 		if (!newstr)
-			return ;
+			return (write(1, "Malloc error, exiting program\n", 30)
+				, free(g_string.str), exit(1), (void)0);
 		ft_memmove(newstr, g_string.str, g_string.size - 1);
 		if (g_string.str)
 		{
