@@ -6,12 +6,13 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 09:58:37 by bajeanno          #+#    #+#             */
-/*   Updated: 2023/01/04 04:37:06 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2023/01/04 04:39:24 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 #include <unistd.h>
+#include <signal.h>
 
 t_string	g_string;
 
@@ -49,6 +50,7 @@ void	update_string(int sig, siginfo_t *info, void *context)
 		g_string.str = newstr;
 		g_string.count = 0;
 	}
+	kill(info->si_pid, SIGUSR1);
 }
 
 int	main(void)
@@ -62,6 +64,8 @@ int	main(void)
 	ft_printf("%d\n", getpid());
 	while (1)
 	{
+    	sigaction(SIGUSR1, &action1, NULL);
+		sigaction(SIGUSR2, &action2, NULL);
 		if (g_string.finished)
 		{
 			ft_printf("%s\n", g_string.str);
@@ -69,6 +73,7 @@ int	main(void)
 			free(g_string.str);
 			ft_init_string();
 		}
+		pause();
 	}
 	return (0);
 }
