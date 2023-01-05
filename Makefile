@@ -6,7 +6,7 @@
 #    By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/17 16:28:53 by bajeanno          #+#    #+#              #
-#    Updated: 2023/01/04 22:33:48 by bajeanno         ###   ########lyon.fr    #
+#    Updated: 2023/01/05 07:07:14 by bajeanno         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,46 +25,52 @@ LIBFT = libft/libft.a
 SERVER_SRC = minitalk_server.c
 CLIENT_SRC = minitalk_client.c
 
+SERVER_COMPIL_NAME = mt_server.c
+CLIENT_COMPIL_NAME = mt_client.c
+
 BONUS_SERVER_SRC = minitalk_server_bonus.c
 BONUS_CLIENT_SRC = minitalk_client_bonus.c
 
-SERVER_OBJ = $(addprefix obj/,$(SERVER_SRC:.c=.o))
-CLIENT_OBJ = $(addprefix obj/,$(CLIENT_SRC:.c=.o))
+SERVER_OBJ = $(addprefix obj/,$(SERVER_COMPIL_NAME:.c=.o))
+CLIENT_OBJ = $(addprefix obj/,$(CLIENT_COMPIL_NAME:.c=.o))
 
-DEPENDS	:=	$(addprefix obj/,$(SERVER_SRC:.c=.d)) $(addprefix obj/,${CLIENT_SRC:.c=.d})
+DEPENDS	:=	$(addprefix obj/,$(SERVER_COMPIL_NAME:.c=.d)) $(addprefix obj/,${CLIENT_COMPIL_NAME:.c=.d})
 
-BONUS_SERVER_OBJ = $(addprefix obj/,$(BONUS_SERVER_SRC:.c=.o))
-BONUS_CLIENT_OBJ = $(addprefix obj/,$(BONUS_CLIENT_SRC:.c=.o))
-
-all :
+all : .main cp_mandatory_files
 	$(MAKE) $(SERVER)
 	$(MAKE) $(CLIENT)
 
+cp_mandatory_files : src/$(SERVER_SRC) src/$(CLIENT_SRC)
+	cp src/$(SERVER_SRC) src/$(SERVER_COMPIL_NAME)
+	cp src/$(CLIENT_SRC) src/$(CLIENT_COMPIL_NAME)
+
 .main :
+	$(RM) $(CLIENT) $(SERVER) $(SERVER_OBJ) $(CLIENT_OBJ)
 	touch .main
 	$(RM) .bonus
 
-$(CLIENT) : create_obj_folder $(CLIENT_OBJ) lib .main
-	$(CC) $(CLIENT_OBJ) $(LIBFT) $(FLAGS) -o $(CLIENT)
-
-$(SERVER) : create_obj_folder $(SERVER_OBJ) lib .main
+$(SERVER) : $(SERVER_OBJ) $(LIBFT)
 	$(CC) $(SERVER_OBJ) $(LIBFT) $(FLAGS) -o $(SERVER)
+	$(RM) src/$(SERVER_COMPIL_NAME)
+	
+$(CLIENT) : $(CLIENT_OBJ) $(LIBFT)
+	$(CC) $(CLIENT_OBJ) $(LIBFT) $(FLAGS) -o $(CLIENT)
+	$(RM) src/$(CLIENT_COMPIL_NAME)
 
-$(BONUS_SERVER) : create_obj_folder $(BONUS_SERVER_OBJ) lib .bonus
-	$(CC) $(BONUS_SERVER_OBJ) $(LIBFT) $(FLAGS) -o $(SERVER)
+bonus : create_obj_dir .bonus
+	cp src/$(BONUS_SERVER_SRC) src/$(SERVER_COMPIL_NAME)
+	cp src/$(BONUS_CLIENT_SRC) src/$(CLIENT_COMPIL_NAME)
+	$(MAKE) $(SERVER)
+	$(MAKE) $(CLIENT)
 
-$(BONUS_CLIENT) : create_obj_folder $(BONUS_CLIENT_OBJ) lib .bonus
-	$(CC) $(BONUS_CLIENT_OBJ) $(LIBFT) $(FLAGS) -o $(CLIENT)
-
-bonus :  lib .bonus
-
-.bonus : 
+.bonus :
+	$(RM) $(CLIENT) $(SERVER) $(BONUS_CLIENT_OBJ) $(BONUS_SERVER_OBJ)
 	touch .bonus
 	$(RM) .main
-	$(MAKE) $(BONUS_SERVER)
-	$(MAKE) $(BONUS_CLIENT)
 
-create_obj_folder :
+create_obj_dir : obj
+
+obj :
 	mkdir -p obj
 
 obj/%.o : src/%.c Makefile
@@ -86,11 +92,12 @@ run : all
 	./a.out
 
 clean :
-	$(RM) $(OBJ) $(BONUS_OBJ) $(DEPENDS)
+	$(RM) $(CLIENT_OBJ) $(SERVER_OBJ) $(BONUS_SERVER_OBJ) $(BONUS_CLIENT_OBJ) $(DEPENDS)
 	$(RM) -r $(NAME).dSYM
 	$(MAKE) clean -C libft
 	
 fclean : clean
+	$(RM) $(SERVER_COMPIL_NAME) $(CLIENT_COMPIL_NAME)
 	$(RM) $(SERVER)
 	$(RM) $(CLIENT)
 	$(RM) .main .bonus
@@ -102,6 +109,6 @@ rm_lib :
 re : fclean
 	$(MAKE) all
 
-.PHONY : all lib run re clean fclean bonus rm_lib
+.PHONY : all lib run re clean fclean bonus rm_lib create_obj_dir
 
 -include $(DEPENDS)
