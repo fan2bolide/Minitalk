@@ -6,7 +6,7 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 10:13:50 by bajeanno          #+#    #+#             */
-/*   Updated: 2022/12/21 17:56:06 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2023/01/06 07:21:47 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ static int	send_byte(char byte, int pid)
 		if (((byte << j) & 0b10000000) == 0)
 		{
 			if (kill(pid, SIGUSR1) != 0)
-				return (write(STDERR_FILENO,"PID is incorrect\n",17), 1);
+				return (write(STDERR_FILENO, "PID is incorrect\n", 17), 1);
 		}
 		else if (kill(pid, SIGUSR2) != 0)
-			return (write(STDERR_FILENO,"PID is incorrect\n", 17), 1);
+			return (write(STDERR_FILENO, "PID is incorrect\n", 17), 1);
 		j++;
 		usleep(20);
 	}

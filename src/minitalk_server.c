@@ -6,7 +6,7 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 09:58:37 by bajeanno          #+#    #+#             */
-/*   Updated: 2023/01/04 22:11:47 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2023/01/06 07:12:39 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_string	g_string;
 
-static void	ft_init_string()
+static void	ft_init_string(void)
 {
 	g_string.str = ft_calloc(g_string.size, sizeof(char));
 	g_string.size = 1;
@@ -36,7 +36,8 @@ void	update_string(int sig)
 		g_string.size++;
 		newstr = ft_calloc(g_string.size, sizeof (char));
 		if (!newstr)
-			return (write(1, "Malloc error, exiting program\n", 30), free(g_string.str), exit(1), (void)0);
+			return (write(1, "Malloc error, exiting program\n", 30)
+				, free(g_string.str), exit(1), (void)0);
 		ft_memmove(newstr, g_string.str, g_string.size - 1);
 		if (g_string.str)
 			free(g_string.str);
@@ -48,6 +49,8 @@ void	update_string(int sig)
 int	main(void)
 {
 	ft_init_string();
+	if (!g_string.str)
+		return (write(2, "Memory allocation error\n", 24), 1);
 	signal(SIGUSR1, update_string);
 	signal(SIGUSR2, update_string);
 	ft_printf("%d\n", getpid());

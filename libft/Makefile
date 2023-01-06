@@ -81,13 +81,13 @@ OBJ = $(addprefix obj/,$(SRC:.c=.o))
 all	: create_obj_folder $(NAME)
 
 $(NAME): $(OBJ)
-	ar -rcs $(NAME) $(OBJ)
+	@ar -rcs $(NAME) $(OBJ)
 
 obj/%.o : src/%.c Makefile head/libft.h
-	cc -Wall -Wextra -Werror -c $< -o $@ -I head
+	@cc -Wall -Wextra -Werror -c $< -o $@ -I head
 
 create_obj_folder :
-	mkdir -p obj
+	@mkdir -p obj
 
 clean:
 	$(RM) -f $(OBJ)

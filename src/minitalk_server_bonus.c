@@ -6,7 +6,7 @@
 /*   By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 09:58:37 by bajeanno          #+#    #+#             */
-/*   Updated: 2023/01/04 22:15:03 by bajeanno         ###   ########lyon.fr   */
+/*   Updated: 2023/01/06 07:21:01 by bajeanno         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_string	g_string;
 
-static void	ft_init_string()
+static void	ft_init_string(void)
 {
 	g_string.str = ft_calloc(g_string.size, sizeof(char));
 	g_string.size = 1;
@@ -22,10 +22,27 @@ static void	ft_init_string()
 	g_string.finished = 0;
 }
 
-void	update_string(int sig, siginfo_t *info, void *context)
+static void	realloc_string(void)
 {
 	char	*newstr;
 
+	g_string.size++;
+	newstr = ft_calloc(g_string.size, sizeof(char));
+	if (!newstr)
+		return (write(1, "Malloc error, exiting program\n", 30),
+			free(g_string.str), exit(1), (void)0);
+	ft_memmove(newstr, g_string.str, g_string.size - 1);
+	if (g_string.str)
+	{
+		free(g_string.str);
+		g_string.str = NULL;
+	}
+	g_string.str = newstr;
+	g_string.count = 0;
+}
+
+static void	update_string(int sig, siginfo_t *info, void *context)
+{
 	(void)context;
 	usleep(5);
 	g_string.str[g_string.size - 1] <<= 1;
@@ -35,19 +52,7 @@ void	update_string(int sig, siginfo_t *info, void *context)
 		return (kill(info->si_pid, SIGUSR1), g_string.finished = 1, (void)0);
 	if (g_string.count == 8)
 	{
-		g_string.size++;
-		newstr = ft_calloc(g_string.size, sizeof (char));
-		if (!newstr)
-			return (write(1, "Malloc error, exiting program\n", 30)
-				, free(g_string.str), exit(1), (void)0);
-		ft_memmove(newstr, g_string.str, g_string.size - 1);
-		if (g_string.str)
-		{
-			free(g_string.str);
-			g_string.str = NULL;
-		}
-		g_string.str = newstr;
-		g_string.count = 0;
+		realloc_string();
 	}
 	kill(info->si_pid, SIGUSR1);
 }
@@ -58,12 +63,12 @@ int	main(void)
 	struct sigaction	action2;
 
 	ft_init_string();
-    action1.sa_sigaction = update_string;
+	action1.sa_sigaction = update_string;
 	action2.sa_sigaction = update_string;
 	ft_printf("%d\n", getpid());
 	while (1)
 	{
-    	sigaction(SIGUSR1, &action1, NULL);
+		sigaction(SIGUSR1, &action1, NULL);
 		sigaction(SIGUSR2, &action2, NULL);
 		if (g_string.finished)
 		{
