@@ -6,9 +6,11 @@
 #    By: bajeanno <bajeanno@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/17 16:28:53 by bajeanno          #+#    #+#              #
-#    Updated: 2022/12/21 19:00:49 by bajeanno         ###   ########lyon.fr    #
+#    Updated: 2023/03/02 02:23:41 by bajeanno         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
+
+NAME = minitalk
 
 CLIENT = client
 
